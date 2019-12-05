@@ -5,76 +5,6 @@ library(data.table)
 
 # This is my and Oscar Leal's code for scraping ultimatespecs
 # Before the `carspecs` function we experimented with the website and set concluded the logic for the function
-# If you don't want to deal with this then proceed to `carspecs`
-
-# Let's take a look at Porsche models
-url <- "https://www.ultimatespecs.com/car-specs/Porsche"
-t <- read_html(url)
-write_html(t, "cars/porsche.html")
-
-porsche_urls <- t %>% html_nodes('.someOtherRow a') %>% 
-  html_attr('href')
-
-porsche_urls <- to_vec(for(x in porsche_urls) if (endsWith(x,'.html')) x)
-
-length(porsche_urls)
-porsche_urls
-
-porsche_make_year <- t %>% html_nodes('.yearText') %>% 
-  html_text()
-porsche_make_year
-
-length(porsche_make_year)
-
-porsche_urls[1]
-
-root_url <- "https://www.ultimatespecs.com"
-type_url <- paste0(root_url, '/car-specs/Porsche/109463/Porsche-Panamera-Sport-Turismo-4S-.html')
-
-
-car_name <- read_html(type_url) %>% 
-  html_nodes(".page_ficha_title_text span") %>% 
-  html_text()
-car_name
-
-#subvers_specs_info$carname <- car_name # Assign to df
-
-production_years <- read_html(type_url) %>% 
-  html_nodes("strong") %>% 
-  html_text()
-
-car_id <- paste0(car_name, production_years)
-car_id
-
-specs_name <- read_html(type_url)
-specs_name <- specs_name %>% html_nodes('.tabletd')  %>% 
-  html_text()
-
-specs_value <- read_html(type_url)
-specs_value <- specs_value %>% html_nodes('.tabletd_right')  %>% 
-  html_text()
-
-length(specs_name)
-length(specs_value)
-
-specs_name <- head(specs_name, -1)
-length(specs_name)
-length(specs_value)
-
-myx <- data.frame(specs_value)
-myx
-View(myx)
-
-myx$specs_name <- specs_name
-myx$car_id <- car_id
-View(myx)
-
-x_spread <- reshape(myx, idvar = "car_id", timevar = "specs_name", direction = "wide")
-View(x_spread)
-colnames(x_spread)
-colnames(x_spread) <- c('Car', specs_name)
-View(x_spread)
-
 
 get_type_specs <- function(url) {
   
@@ -135,25 +65,6 @@ get_type_specs <- function(url) {
   
 }
 
-mytry <- '/car-specs/Porsche/109463/Porsche-Panamera-Sport-Turismo-4S-.html'
-mytry_res <- get_type_specs(mytry)
-View(mytry_res)
-
-mytry2 <- '/car-specs/Porsche/112464/Porsche-Cayenne-III-.html'
-mytry_res2 <- get_type_specs(mytry2)
-View(mytry_res2)
-
-tryset <- porsche_urls[c(1,31,100)]
-tryset <- '/car-specs/Porsche/109463/Porsche-Panamera-Sport-Turismo-4S-.html'
-
-myres <- lapply(tryset, get_type_specs)
-
-view_res <- rbindlist(myres, fill = T)
-View(view_res)
-
-a <- 'dsfjsadkgé : '
-a <- gsub(':', '', a)
-a
 
 get_specs <- function(make) {
   
